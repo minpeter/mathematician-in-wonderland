@@ -12,10 +12,11 @@ RUN go build -o server .
 
 FROM alpine
 
-COPY --from=builder /app/server /app
-
 RUN apk add --no-cache socat
 
-EXPOSE 5555
+COPY --from=builder /app/server /app
 
-CMD socat TCP-LISTEN:5555,reuseaddr,fork EXEC:"/app"
+ENV PORT 1337
+EXPOSE $PORT
+
+CMD socat TCP-LISTEN:$PORT,reuseaddr,fork EXEC:"/app"
