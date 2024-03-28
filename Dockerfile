@@ -12,10 +12,16 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o /bin/app .
 FROM alpine:latest
 COPY --from=builder /bin/app /app
 
-RUN apk add --no-cache socat websocketd
+# RUN apk add --no-cache socat websocketd
 
-EXPOSE 1337
+# EXPOSE 1337
+# EXPOSE 1338
+
+# CMD socat TCP-LISTEN:1337,reuseaddr,fork EXEC:"/app" & \
+#     websocketd --port=1338 /app
+
+RUN apk add --no-cache websocketd
+
 EXPOSE 1338
 
-CMD socat TCP-LISTEN:1337,reuseaddr,fork EXEC:"/app" & \
-    websocketd --port=1338 /app
+CMD websocketd --port=1338 /app
